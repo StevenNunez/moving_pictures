@@ -61,17 +61,17 @@ class MovingPictures < Thor
   end
 end
 def time_to_seconds(time)
-   unless time =~ /\d{1,2}:\d{1,2}:\d{1,2}/
-   # Generate Earth Shattering Error      
-   time.split(":").each.with_index do |x,y| 
-      if y == 0
-        totalsecs = Integer(x)*3600
-      elsif y == 1 
-        totalsecs += Integer(x)*60
-      else y == 2
-        totalsecs += Integer(x)
-        totalsecs
+    if time =~ /\d{1,2}:\d{1,2}:\d{1,2}/
+   # Generate Earth Shattering Error
+      time.split(":").each.with_index do |x,y|
+         if y == 0
+            @totalsecs = Integer(x)*3600
+         elsif y == 1
+            @totalsecs += Integer(x)*60
+         else y == 2
+            @totalsecs += Integer(x)
+            puts @totalsecs
+         end
       end
-   
    end
 end
