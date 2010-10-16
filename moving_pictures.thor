@@ -16,7 +16,23 @@ class MovingPictures < Thor
       puts 'sorry no file by that name'
     end
   end
-  
+
+  desc "grab HH_MM_SS, Duration, Video_File", "Cut a portion of the video based on a start point and duration"
+  method_options :output_file => :string
+  def video_slice(start, duration, video_file)
+    timesplit = moment.split(':')
+    moment_in_seconds = timesplit.first.to_i * 3600 + timesplit[1].to_i * 60 + timesplit.last.to_i
+    type = options.output_type? ? options.output_type : "mjpeg"
+    if File.exists?(video_file)
+      base = File.basename(video_file)
+      cmd = ffmpeg -sameq -ss #{moment_in_seconds} -t ${duration} -i #{video_file} [outputfile]  
+      `#{cmd}`
+      else
+        puts 'sorry no file by that name
+      end
+    end
+
+
   desc "flash_transcode VIDEO_FILE", "convert video to flash encoded"
   method_options :output_file => :string
   def flash_transcode(video_file)
