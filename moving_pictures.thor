@@ -4,12 +4,11 @@ class MovingPictures < Thor
   desc "grab HH_MM_SS VIDEO_FILE", "grab image from video file"  
   method_options :output_type => :string, :output_file => :string, :output_size => :string         
   def grab(moment,video_file)
-    timesplit = moment.split(':')
-    moment_in_seconds = timesplit.first.to_i * 3600 + timesplit[1].to_i * 60 + timesplit.last.to_i
+    moment_in_seconds = time_to_seconds(moment)
     type = options.output_type? ? options.output_type : "mjpeg"
     if File.exists?(video_file)
-      base = File.basename(video_file)
-      cmd = "ffmpeg -i #{video_file} -vcodec #{type} -vframes 1 -an -f rawvideo -y -ss #{moment_in_seconds} #{File.basename(video_file).gsub(File.extname(video_file),'.jpeg')}"
+      base = File.basename(video_file,File.extname(video_file))
+      cmd = "ffmpeg -i #{video_file} -vcodec #{type} -vframes 1 -an -f rawvideo -y -ss #{moment_in_seconds} #{base}.jpeg"
       puts cmd
       `#{cmd}`
     else
@@ -20,12 +19,12 @@ class MovingPictures < Thor
   desc "grab HH_MM_SS, Duration, Video_File", "Cut a portion of the video based on a start point and duration"
   method_options :output_file => :string
   def video_slice(start, duration, video_file)
-    timesplit = moment.split(':')
-    moment_in_seconds = timesplit.first.to_i * 3600 + timesplit[1].to_i * 60 + timesplit.last.to_i
+    moment_in_seconds = time_to_seconds(start)
     type = options.output_type? ? options.output_type : "mjpeg"
     if File.exists?(video_file)
-      base = File.basename(video_file)
-      cmd = ffmpeg -sameq -ss #{moment_in_seconds} -t ${duration} -i #{video_file} [outputfile]  
+      base = File.basename(video_file,File.extname(video_file))
+      ext = File.extname(video_file)
+      cmd = "ffmpeg -sameq -ss #{moment_in_seconds} -t ${duration} -i #{video_file} sub_#{base}.#{ext}"
       `#{cmd}`
       else
         puts 'sorry no file by that name
@@ -60,4 +59,17 @@ class MovingPictures < Thor
       puts "error: no file #{mov_file}"
     end
   end
+end
+
+def time_to_seconds(time)
+   time.split(":").each.with_index do |x,y| 
+      if y == 0
+         @totalsecs = Integer(x)*3600
+      elsif y == 1 
+        @totalsecs += Integer(x)*60
+      else y == 2
+        @totalsecs += Integer(x)
+    puts @totalsecs
+      end
+   end
 end
