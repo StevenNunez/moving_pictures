@@ -27,7 +27,7 @@ class MovingPictures < Thor
       cmd = "ffmpeg -sameq -ss #{moment_in_seconds} -t ${duration} -i #{video_file} sub_#{base}.#{ext}"
       `#{cmd}`
       else
-        puts 'sorry no file by that name
+        puts 'sorry no file by that name'
       end
     end
 
